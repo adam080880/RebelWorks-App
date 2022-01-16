@@ -12,6 +12,8 @@ target 'RebelWorksReactNative' do
     :hermes_enabled => false
   )
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'RebelWorksReactNativeTests' do
     inherit! :complete
     # Pods for testing

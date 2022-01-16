@@ -17,9 +17,8 @@ export default (data) => ({item = {}, index = 0}, parallaxProps) => {
       style={[
         {
           minHeight: (280 / 812) * height,
-          justifyContent: 'center',
-          alignItems: 'flex-start',
-          justifyContent: 'center'
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start'
         },
       ]}
       level={'4'}>
@@ -50,7 +49,7 @@ export default (data) => ({item = {}, index = 0}, parallaxProps) => {
         <Text category={'h4'} style={{marginBottom: ((15 / 812) * height)}}>
           {item.title}
         </Text>
-        <Button appearance={'outline'} style={{borderRadius: 250}}>
+        <Button size={'medium'} appearance={'outline'} style={{borderRadius: 250}} onPress={data.onPress ? () => data.onPress(item) : () => {}}>
           Watch Now
         </Button>
       </View>

@@ -26,14 +26,14 @@ export default (props) => {
             }}>
             <View
               style={{
-                width: 10,
-                height: 10,
+                width: 8,
+                height: 8,
                 backgroundColor:
                   activeIndex == key
                     ? 'white'
                     : 'rgba(255, 255, 255, 0.4)',
-                borderRadius: 10 / 2,
-                marginHorizontal: 5,
+                borderRadius: 8 / 2,
+                marginHorizontal: 4,
               }}
             />
           </TouchableWithoutFeedback>

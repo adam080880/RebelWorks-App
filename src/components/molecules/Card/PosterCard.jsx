@@ -8,12 +8,13 @@ import StarRating from 'react-native-star-rating';
 
 export default (props) => {
   const width = Dimensions.get('window').width;
+  const cardWidth = props.width || (160 / 375) * width;
 
   return (
     <TouchableOpacity style={{
-      width: (160 / 375) * width,
-      height: ((160 / 375) * width) * 4 / 3,
-      marginRight: 8,
+      width: cardWidth,
+      height: (cardWidth) * 4 / 3,
+      marginRight: (props.marginLess) ? 0 : 8,
       justifyContent: 'flex-end',
       alignItems: 'flex-start',
       padding: 10
@@ -22,7 +23,7 @@ export default (props) => {
       <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}>
         <PosterImage
           uri={`${props.configuration.base_url}w300${props.poster_path}`}
-          width={(160 / 375) * width}
+          width={cardWidth}
         />
       </View>
       

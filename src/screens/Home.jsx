@@ -1,5 +1,5 @@
 import React from "react";
-import {Icon, Layout, Spinner, Text} from '@ui-kitten/components';
+import {Layout, Spinner, Text, useTheme, withStyles} from '@ui-kitten/components';
 import {Dimensions, ScrollView, StyleSheet, View} from 'react-native';
 import {baseContainerStyle, containerStyle} from '../utils/default';
 import Carousel from 'react-native-snap-carousel';
@@ -14,13 +14,15 @@ import { movieDbConfigutation } from '../services/configuration';
 import PosterImage from '../components/atoms/Poster/PosterImage';
 import PosterCard from '../components/molecules/Card/PosterCard';
 import { NavigationContainer } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Entypo';
 
-export default class Home extends React.Component {
+class Home extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       nowPlayingsLoading: true,
+      tvShowLoading: true,
       sliders: [],
       tvShows: [],
       nowPlayings: [],
@@ -51,7 +53,8 @@ export default class Home extends React.Component {
       const discoverTv = data.results || [];
 
       this.setState({
-        tvShows: discoverTv
+        tvShows: discoverTv,
+        tvShowLoading: false
       })
     })
 
@@ -94,8 +97,9 @@ export default class Home extends React.Component {
   render() {
     const width = Dimensions.get('window').width;
     const height = Dimensions.get('window').height;
+    const theme = this.props.eva.theme
 
-    return this.state.nowPlayingsLoading > 0 ? (
+    return (this.state.nowPlayingsLoading || this.state.tvShowLoading) ? (
       <Layout style={[styles.baseContainer, { alignItems: 'center', justifyContent: 'center' }]}>
         <Spinner size={'giant'} status={'primary'} />
       </Layout>
@@ -109,8 +113,17 @@ export default class Home extends React.Component {
                 ref={ref => (this.sliderRef = ref)}
                 renderItem={SliderItem({
                   genre: this.state.genre,
-                  configuration: this.state.configuration
+                  configuration: this.state.configuration,
+                  onPress: (item) => {
+                    this.props.navigation.navigate('Detail', {
+                      id: item.id,
+                      configuration: this.state.configuration,
+                      item: item,
+                      genre: this.state.genre
+                    })
+                  }
                 })}
+                slideStyle={{flex: 1}}
                 windowSize={width}
                 sliderWidth={width}
                 itemWidth={width}
@@ -121,23 +134,29 @@ export default class Home extends React.Component {
                 onSnapToItem={index => this.setState({ sliderIndex: index })}
               />
 
-              <Pagination
-                sliderIndex={this.state.sliderIndex}
-                sliders={this.state.sliders}
-                sliderRef={this.sliderRef}
-                onChangeDots={(sliderIndex) => {
-                  this.setState({
-                    sliderIndex
-                  })
-                }}
-              />
+              <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'flex-end', justifyContent: 'flex-end'}}>
+                <Pagination
+                  sliderIndex={this.state.sliderIndex}
+                  sliders={this.state.sliders}
+                  sliderRef={this.sliderRef}
+                  onChangeDots={(sliderIndex) => {
+                    this.setState({
+                      sliderIndex
+                    })
+                  }}
+                />
+              </View>
             </>}
           </Layout>
 
           <Layout style={{ paddingHorizontal: 15, paddingTop: 20, paddingBottom: 50 }}>
             <View style={{ justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
               <Text category={'h5'}>New Release</Text>
-              <TextButton>
+              <TextButton onPress={() => {
+                this.props.navigation.navigate('List', {
+                  type: 'movie'
+                })
+              }} icon={<Icon style={{marginLeft: 5}} size={10} color={theme['color-primary-default']} name={'chevron-right'} />}>
                 See All
               </TextButton>
             </View>
@@ -169,7 +188,11 @@ export default class Home extends React.Component {
 
             <View style={{ justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', paddingTop: 20 }}>
               <Text category={'h5'}>TV Show</Text>
-              <TextButton>
+              <TextButton onPress={() => {
+                this.props.navigation.navigate('List', {
+                  type: 'tv'
+                })
+              }} icon={<Icon style={{marginLeft: 5}} size={10} color={theme['color-primary-default']} name={'chevron-right'} />}>
                 See All
               </TextButton>
             </View>
@@ -212,3 +235,4 @@ const styles = StyleSheet.create({
   ...containerStyle(),
 });
 
+export default withStyles(Home)
